@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vehicle Information Form</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="login">
+        <h1>Vehicle Information</h1>
+   
+        <form action="{{ url_for('predict_datapoint')}}" method="post">
+            <div class="mb-3">
+                <label class="form-label">AB Test</label>
+                <select class="form-control" name="abtest" required>
+                    <option selected disabled value="">Select AB Test</option>
+                    <option value="test">Test</option>
+                    <option value="control">Control</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Vehicle Type</label>
+                <select class="form-control" name="vehicleType" required>
+                    <option selected disabled value="">Select Vehicle Type</option>
+                    <option value="coupe">Coupe</option>
+                    <option value="suv">SUV</option>
+                    <option value="kleinwagen">Kleinwagen</option>
+                    <option value="limousine">Limousine</option>
+                    <option value="cabrio">Cabrio</option>
+                    <option value="bus">Bus</option>
+                    <option value="kombi">Kombi</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Gearbox</label>
+                <select class="form-control" name="gearbox" required>
+                    <option selected disabled value="">Select Gearbox</option>
+                    <option value="manuell">Manuell</option>
+                    <option value="automatik">Automatik</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Power PS (100 - 2500)</label>
+                <input class="form-control" type="number" name="powerPS" placeholder="Enter Power PS" min="100"
+                    max="2500" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Brand</label>
+                <select class="form-control" id="brand" name="brand" required>
+                    <option selected disabled value="">Select Brand</option>
+                    <!-- Add brand options here -->
+                    <option value="volkswagen">Volkswagen</option>
+                    <option value="skoda">Skoda</option>
+                    <option value="bmw">BMW</option>
+                    <option value="peugeot">Peugeot</option>
+                    <option value="mazda">Mazda</option>
+                    <option value="nissan">Nissan</option>
+                    <option value="renault">Renault</option>
+                    <option value="ford">Ford</option>
+                    <option value="mercedes_benz">Mercedes Benz</option>
+                    <option value="seat">Seat</option>
+                    <option value="honda">Honda</option>
+                    <option value="fiat">Fiat</option>
+                    <option value="mini">Mini</option>
+                    <option value="opel">Opel</option>
+                    <option value="smart">Smart</option>
+                    <option value="alfa_romeo">Alfa Romeo</option>
+                    <option value="subaru">Subaru</option>
+                    <option value="mitsubishi">Mitsubishi</option>
+                    <option value="hyundai">Hyundai</option>
+                    <option value="volvo">Volvo</option>
+                    <option value="lancia">Lancia</option>
+                    <option value="porsche">Porsche</option>
+                    <option value="citroen">Citroen</option>
+                    <option value="toyota">Toyota</option>
+                    <option value="kia">Kia</option>
+                    <option value="chevrolet">Chevrolet</option>
+                    <option value="dacia">Dacia</option>
+                    <option value="suzuki">Suzuki</option>
+                    <option value="daihatsu">Daihatsu</option>
+                    <option value="chrysler">Chrysler</option>
+                    <option value="jaguar">Jaguar</option>
+                    <option value="rover">Rover</option>
+                    <option value="jeep">Jeep</option>
+                    <option value="saab">Saab</option>
+                    <option value="daewoo">Daewoo</option>
+                    <option value="land_rover">Land Rover</option>
+                    <option value="trabant">Trabant</option>
+                    <option value="lada">Lada</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Model</label>
+                <select class="form-control" id="model" name="model" required>
+                    <option selected disabled value="">Select Model</option>
+                    <!-- Models will be dynamically populated based on selected brand -->
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Kilometer</label>
+                <input class="form-control" type="number" name="kilometer" placeholder="Enter Kilometer" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Fuel Type</label>
+                <select class="form-control" name="fuelType" required>
+                    <option selected disabled value="">Select Fuel Type</option>
+                    <option value="benzin">Benzin</option>
+                    <option value="diesel">Diesel</option>
+                    <!-- Add other fuel type options here -->
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Not Repaired Damage</label>
+                <select class="form-control" name="notRepairedDamage" required>
+                    <option selected disabled value="">Select Damage Status</option>
+                    <option value="nein">Nein</option>
+                    <option value="ja">Ja</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Year Of Registration (1940 - 2016)</label>
+                <input class="form-control" type="number" name="yearOfRegistration" placeholder="The year of Registration" min="1940"
+                    max="2016" required />
+            </div>
+            <div class="mb-3">
+                <input class="btn btn-primary" type="submit" value="Predict" />
+            </div>
+        </form>
+        <h2>
+            THE prediction is {{results}}
+        </h2>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            // Models data based on brand
+            var modelsData = {
+                'alfa_romeo': ['156', '147', '159', 'andere', 'spider', '145'],
+                'audi': ['a8', 'a1', 'tt', 'a6', '80', 'a4', 'a3', 'a2', 'a5', 'andere', 'q5', '100', 'q7', 'q3', '90', '200'],
+                'bmw': ['3er', '5er', '1er', 'andere', '7er', 'z_reihe', '6er', 'x_reihe', 'm_reihe', 'i3'],
+                'chevrolet': ['matiz', 'andere', 'spark', 'captiva', 'aveo'],
+                'chrysler': ['andere', 'crossfire', '300c', 'ptcruiser', 'grand', 'voyager'],
+                'citroen': ['berlingo', 'c4', 'andere', 'c3', 'c5', 'c1', 'c2'],
+                'dacia': ['logan', 'duster', 'sandero', 'lodgy', 'andere'],
+                'daewoo': ['matiz', 'andere', 'nubira', 'lanos', 'kalos'],
+                'daihatsu': ['cuore', 'sirion', 'andere', 'charade', 'terios', 'move', 'materia'],
+                'fiat': ['punto', 'panda', 'andere', 'stilo', '500', 'ducato', 'bravo', 'seicento', 'croma', 'doblo'],
+                'ford': ['c_max', 'fiesta', 'escort', 'focus', 'mustang', 'mondeo', 's_max', 'galaxy', 'andere', 'kuga', 'ka', 'transit', 'fusion', 'b_max'],
+                'honda': ['civic', 'andere', 'jazz', 'accord', 'cr_reihe'],
+                'hyundai': ['andere', 'getz', 'i_reihe', 'santa', 'tucson'],
+                'jaguar': ['andere', 'x_type', 's_type'],
+                'jeep': ['grand', 'wrangler', 'cherokee', 'andere'],
+                'kia': ['ceed', 'rio', 'andere', 'sportage', 'picanto', 'sorento', 'carnival'],
+                'lada': ['andere', 'niva', 'kalina', 'samara'],
+                'lancia': ['andere', 'ypsilon', 'lybra', 'musa', 'delta', 'elefantino', 'kappa'],
+                'land_rover': ['discovery', 'range_rover', 'freelander', 'range_rover_evoque', 'defender', 'range_rover_sport', 'serie_2', 'andere', 'serie_3', 'discovery_sport'],
+                'mazda': ['3_reihe', 'andere', '6_reihe', '5_reihe', 'rx_reihe', 'mx_reihe', 'cx_reihe', '1_reihe'],
+                'mercedes_benz': ['a_klasse', 'andere', 'e_klasse', 'b_klasse', 'c_klasse', 'vito', 'sprinter', 'slk', 'glk', 'm_klasse', 'viano', 's_klasse', 'sl', 'clk', 'v_klasse', 'cl', 'g_klasse', 'gl'],
+                'mini': ['one', 'cooper', 'andere', 'clubman'],
+                'mitsubishi': ['andere', 'colt', 'galant', 'carisma', 'lancer', 'pajero', 'outlander'],
+                'nissan': ['navara', 'micra', 'andere', 'primera', 'juke', 'qashqai', 'almera', 'x_trail', 'note'],
+                'opel': ['astra', 'combo', 'meriva', 'insignia', 'corsa', 'vectra', 'zafira', 'omega', 'andere', 'signum', 'agila', 'tigra', 'antara', 'kadett', 'vivaro', 'calibra'],
+                'peugeot': ['2_reihe', '3_reihe', 'andere', '4_reihe', '1_reihe', '5_reihe'],
+                'porsche': ['andere', 'boxster', '911', 'cayenne'],
+                'renault': ['twingo', 'clio', 'scenic', 'megane', 'r19', 'kangoo', 'andere', 'modus', 'espace', 'laguna'],
+                'rover': ['andere', 'discovery', 'rangerover', 'freelander', 'defender'],
+                'saab': ['andere', '900', '9000'],
+                'seat': ['arosa', 'ibiza', 'mii', 'leon', 'exeo', 'cordoba', 'alhambra', 'andere', 'toledo', 'altea'],
+                'skoda': ['fabia', 'yeti', 'octavia', 'roomster', 'andere', 'citigo', 'superb'],
+                'smart': ['fortwo', 'andere', 'roadster', 'forfour'],
+                'subaru': ['forester', 'impreza', 'legacy', 'justy', 'andere'],
+                'suzuki': ['andere', 'grand', 'swift', 'jimny'],
+                'toyota': ['andere', 'avensis', 'corolla', 'verso', 'rav', 'yaris', 'aygo', 'auris'],
+                'trabant': ['andere', '601'],
+                'volkswagen': ['golf', 'andere', 'passat', 'scirocco', 'transporter', 'jetta', 'polo', 'eos', 'touran', 'lupo', 'tiguan', 'sharan', 'up', 'fox', 'beetle', 'touareg', 'kaefer', 'caddy', 'phaeton', 'cc', 'bora', 'amarok'],
+                'volvo': ['v40', 'v50', 'andere', 'c_reihe', 'xc_reihe', 'v70', 's60', '850', 'v60']
+            };
+
+            // Function to populate models based on selected brand
+            function populateModels(brand) {
+                var models = modelsData[brand];
+                var modelDropdown = $('#model');
+
+                // Clear existing options
+                modelDropdown.empty();
+
+                // Add default option
+                modelDropdown.append('<option selected disabled value="">Select Model</option>');
+
+                // Add new options
+                $.each(models, function(index, value) {
+                    modelDropdown.append('<option value="' + value + '">' + value + '</option>');
+                });
+            }
+
+            // When brand is changed, populate models
+            $('#brand').change(function() {
+                var selectedBrand = $(this).val();
+                populateModels(selectedBrand);
+            });
+
+            // Initialize model dropdown with default disabled option
+            populateModels('volkswagen');  // You can change this to any default brand
+        });
+    </script>
+
+</body>
+</html>

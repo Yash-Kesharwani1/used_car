@@ -1,6 +1,8 @@
 import os
 import sys
 
+import numpy as np
+
 # We are importing CustomException Class to handle the exception
 from src.exception import CustomException
 
@@ -15,6 +17,14 @@ from sklearn.model_selection import train_test_split
 
 # 
 from dataclasses import dataclass
+
+# Importing data_transformation
+from src.components.data_transformation import DataTransformation
+from src.components.data_transformation import DataTransformationConfig
+
+# Importing model_trainer
+from src.components.model_trainer import ModelTrainer
+from src.components.model_trainer import ModelTrainerConfig
 
 @dataclass
 # Any input is given through this DataIngestionConfig to Ingestion
@@ -72,3 +82,33 @@ class DataIngestion:
         # This will raise exception 
         except Exception as e:
             raise CustomException(e, sys)
+        
+if __name__ == '__main__':
+    obj = DataIngestion()
+    train_data_path, test_data_path = obj.initiate_data_ingestion()
+
+    obj2 = DataTransformation()
+    train_data_arr , test_data_arr,_ = obj2.initiate_data_transformation(train_data_path, test_data_path)
+
+    traindata = pd.DataFrame(train_data_arr)
+    testdata = pd.DataFrame(test_data_arr)
+
+    # traindata.to_csv('notebook/n3.csv')
+
+    # i = 1
+    # for i in range(50):
+    #     print("This is the size of train_data_array : ",(train_data_arr[i,2]))
+
+    # # for i in range()
+    # print("Printing the null or not : ", np.isnan(train_data_arr).sum())
+
+
+    # j = 1
+    # for j in range(50):
+    #     print("This is the size of train_data_array : ",(test_data_arr[j,2]))
+
+    # # for i in range()
+    # print("Printing the null or not : ", np.isnan(test_data_arr).sum())
+
+    obj3 = ModelTrainer()
+    obj3.initiate_model_trainer(train_data_arr,test_data_arr)
