@@ -1,5 +1,6 @@
 import os
 from flask import Flask, request, render_template
+import math
 from src.pipeline.predict_pipeline import PredictPipeline
 from src.pipeline.predict_pipeline import CustomData
 # from src.components.data_ingestion import DataIngestions
@@ -81,7 +82,7 @@ def predict_datapoint():
 
         predict_pipeline = PredictPipeline()
         results = predict_pipeline.predict(pred_df)
-        return render_template('home.html', results = results[0])
+        return render_template('home.html', results = math.floor(results[0]))
 
 
 if __name__ == '__main__':
